@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <title>AJAX</title>
+  </head>
+  <body>
+    <h1>Ajax</h1>
+    <form action="">
+      <label for="lookFor">Rechercher un produit</label>
+      <input type="text" name="lookFor" id="lookFor" />
+    </form>
+    <table>
+      <caption id="results"></caption>
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Nom</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <script>
+      const tbody = document.getElementById("tbody");
+      const results = document.getElementById("results");
+      const input = document.getElementById("lookFor");
+      input.addEventListener("keyup", changeHandler);
+      let request = false;
+
+      function ajaxResult(response) {
+        // Appelée en fin de chargement de la requête
+        let result = JSON.parse(response);
+        display(result);
+        request = false;
+      }
+
+      function changeHandler() {
+        if (!request) {
+          $.post("ajax.php", { passed: input.value }, ajaxResult);
+          request = true;
+        }
+      }
+
+      function display(result) {
+        tbody.innerHTML = "";
+        results.textContent = result.length + " résultats";
+        for (let i = 0; i < result.length; i++) {
+          tbody.innerHTML +=
+            "<tr><td>" +
+            result[i].productCode +
+            "</td><td>" +
+            result[i].productName +
+            "</td></tr>";
+        }
+      }
+    </script>
+  </body>
+</html>
